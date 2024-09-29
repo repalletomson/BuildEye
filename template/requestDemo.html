@@ -1,0 +1,137 @@
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Request a Demo - Construct AI</title>
+    <style>
+        .background-image {
+            background-image: url('https://artofconstruction.photography/wp-content/uploads/2020/04/img_9577.jpg'); /* Replace with your background image URL */
+            background-size: cover;
+            background-position: center;
+            height: 40vh;
+        }
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            height: 100%;
+            width: 100%;
+        }
+        .c{
+            color:#FAFAFA;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-image ">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-96 left-[-10rem] relative z-20">
+            <h2 class="text-xl font-bold mb-4">Contact Form</h2>
+            <form>
+                <div class="mb-4">
+                    <label for="first-name" class="block text-gray-700">First Name</label>
+                    <input type="text" id="first-name" class="w-full border border-gray-300 p-2 rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label for="last-name" class="block text-gray-700">Last Name</label>
+                    <input type="text" id="last-name" class="w-full border border-gray-300 p-2 rounded" required>
+                </div>
+                <div class="mb-4">
+                    <label for="company" class="block text-gray-700">Company Name</label>
+                    <input type="text" id="company" class="w-full border border-gray-300 p-2 rounded">
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-700">Email</label>
+                    <input type="email" id="email" class="w-full border border-gray-300 p-2 rounded" required>
+                </div>
+                <button type="submit" class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition">Submit</button>
+            </form>
+        </div>
+    </div>
+        <div class="overlay inset-0"></div>
+        <div class="relative z-10 flex items-center justify-center h-full">
+            <div class="text-white text-center px-6">
+                <h1 class="text-4xl font-bold mb-4">Request a Demo</h1>
+                <p class="text-lg mb-6 c">Learn more about how Construct AI can streamline your construction projects. Our software will help you manage tasks effectively, notify you when projects are off schedule, and analyze your budget each month. Discover which of our packages best fits your company's needs.</p>
+            </div>
+    </div>
+</body>
+</html> {% endcomment %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Request a Demo - Construct AI</title>
+    <style>
+        .background-image {
+            background-image: url('https://artofconstruction.photography/wp-content/uploads/2020/04/img_9577.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh; /* Full height for the background */
+            width: 50%; /* Half of the screen width */
+            position: fixed; /* Fix it to the left side */
+            left: 0;
+            top: 0;
+        }
+        .dark-blue {
+            color: #1E3A8A; /* Dark blue for headers, nav bars */
+          }
+        
+        .form-container {
+            height: 100vh; /* Full height for the form container */
+            width: 50%; /* Half of the screen width */
+             right: 0;
+            top: 0;
+            {% comment %} background-color: rgba(255, 255, 255, 0.9); /* Light background for form */ {% endcomment %}
+            position: fixed; /* Fix it to the right side */
+            padding: 2rem; /* Padding for the form */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            {% comment %} box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2); /* Shadow for form container */ {% endcomment %}
+        }
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav p-4  sticky top-0 z-10">
+        <div class="container mx-auto flex items-center justify-between">
+            <div class="flex items-center">
+                {% comment %} <img src="https://png.pngtree.com/png-vector/20221118/ourmid/pngtree-minimalistic-eye-vector-flatstyled-pictogram-for-vision-vector-light-illustration-vector-png-image_41032856.jpg" class="w-12 dark-blue grayscale-image"> {% endcomment %}
+                <a href="/" class="dark-blue pl-16 text-3xl font-bold">BuildEye</a>
+            </div>
+        </div>
+    </nav>
+    <div class="background-image"></div>
+    <div class="form-container">
+        <h1 class="text-4xl font-bold mb-4 mt-7 text-yellow-900">Request a Demo</h1>
+        <p class="text-lg mb-6 text-white bg-blue-500 p-2">Learn more about how <strong>BuildEye</strong> can streamline your construction projects. Our software will help you manage tasks effectively, notify you when projects are off schedule, and analyze your budget each month. Discover which of our packages best fits your company's needs.</p>
+        <h2 class="text-xl font-bold mb-4">Contact Form</h2>
+        <form method="POST" action="{% url 'request_demo' %}">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label for="first-name" class="block text-gray-700">First Name</label>
+                <input type="text" id="first-name" name="first_name" class="w-full border border-gray-300 p-2 rounded" required>
+            </div>
+            <div class="mb-4">
+                <label for="last-name" class="block text-gray-700">Last Name</label>
+                <input type="text" id="last-name" name="last_name" class="w-full border border-gray-300 p-2 rounded" required>
+            </div>
+            <div class="mb-4">
+                <label for="company" class="block text-gray-700">Company Name</label>
+                <input type="text" id="company" name="company" class="w-full border border-gray-300 p-2 rounded">
+            </div>
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700">Email</label>
+                <input type="email" id="email" name="email" class="w-full border border-gray-300 p-2 rounded" required>
+            </div>
+            <button type="submit" class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

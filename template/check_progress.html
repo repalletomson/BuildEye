@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuildEye</title>
+    <!-- Link to Tailwind CSS CDN -->
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100">
+    <!-- Navigation Bar -->
+    <nav class="nav p-4 bg-white shadow sticky top-0 z-10">
+        <div class="container mx-auto flex items-center justify-between">
+            <div class="flex items-center">
+                <img src="https://png.pngtree.com/png-vector/20221118/ourmid/pngtree-minimalistic-eye-vector-flatstyled-pictogram-for-vision-vector-light-illustration-vector-png-image_41032856.jpg" class="w-12 dark-blue grayscale-image">
+                <a href="#" class="dark-blue text-2xl font-bold">BuildEye</a>
+            </div>
+            <ul class="flex space-x-6">
+                <li><a href="#home" class="text-grey-800 hover:text-yellow-500">Home</a></li>
+                <li><a href="#about" class="text-grey-800 hover:text-yellow-500">About Us</a></li>
+                <li><a href="#services" class="text-grey-800 hover:text-yellow-500">Services</a></li>
+                <li><a href="#contact" class="text-grey-800 hover:text-yellow-500">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Form Section -->
+    <div class="container mx-auto py-16">
+        <h1 class="text-3xl font-bold text-center mb-8">Check the Progress</h1>
+        <div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
+            <label for="construction_stage" class="block text-gray-700">Select Construction Stage:</label>
+                <select id="construction_stage" name="construction_stage" class="w-full border border-gray-300 p-2 rounded" required>
+                    <option value="foundation">Foundation</option>
+                    <option value="superstructure">Superstructure</option>
+                    <option value="interiors">Interiors</option>
+                    <!-- Add more stages as needed -->
+                </select>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit"
+                    class="w-full py-2 px-4 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition">Submit</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

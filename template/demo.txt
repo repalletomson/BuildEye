@@ -1,0 +1,210 @@
+    path('image-comparison/', views.image_comparison_view, name='image_comparison'),
+
+
+
+import torch
+import joblib
+import numpy as np
+from PIL import Image
+from django.conf import settings
+from torchvision import transforms
+from torchvision import models
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+import os
+from django.shortcuts import render
+from django.core.files.storage import FileSystemStorage
+
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+import cv2  # OpenCV for image comparison
+from .forms import UploadImageForm
+from django.http import JsonResponse
+
+
+def home(request):
+    return render(request, 'base.html')
+    
+def request_demo(request):  
+    if request.method == "POST":
+        # Process the form data
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        company = request.POST.get('company')
+        email = request.POST.get('email')
+        
+        return HttpResponse(f"""
+            <html>
+                <body>
+                    <h1>Thank you for your request, {first_name}!</h1>
+                    <a href="/" class="bg-yellow-500 text-white font-semibold py-2 px-4 rounded hover:bg-yellow-600 transition">Go to Home</a>
+                </body>
+            </html>
+        """)
+    return render(request, 'requestDemo.html')
+    
+@csrf_exempt
+def compare_images(request):
+    if request.method == 'POST':
+        # Retrieve the images from the request
+        initial_image = request.FILES.get('initial_image') 
+        current_image = request.FILES.get('current_image')
+
+        if not initial_image or not current_image:
+            return JsonResponse({"error": "Both images are required."}, status=400)
+
+        fs = FileSystemStorage(location='uploads/')
+
+        initial_filename = fs.save(initial_image.name, initial_image)
+        initial_image_path = fs.path(initial_filename)
+
+        current_filename = fs.save(current_image.name, current_image)
+        current_image_path = fs.path(current_filename)
+
+        try:
+            # Load images using OpenCV directly from the saved file paths
+            img1 = cv2.imread(initial_image_path)
+            img2 = cv2.imread(current_image_path)
+
+            if img1 is None or img2 is None:
+                return JsonResponse({"error": "Error in loading images."}, status=400)
+
+            # Resize and convert to grayscale
+            height, width = min(img1.shape[0], img2.shape[0]), min(img1.shape[1], img2.shape[1])
+            resized_img1 = cv2.resize(img1, (width, height))
+            resized_img2 = cv2.resize(img2, (width, height))
+            gray_img1 = cv2.cvtColor(resized_img1, cv2.COLOR_BGR2GRAY)
+            gray_img2 = cv2.cvtColor(resized_img2, cv2.COLOR_BGR2GRAY)
+
+            # Compute difference and apply threshold
+            diff = cv2.absdiff(gray_img1, gray_img2)
+            _, thresh = cv2.threshold(diff, 30, 255, cv2.THRESH_BINARY)
+
+            # Calculate percentage of changes
+            total_pixels = np.prod(thresh.shape)
+            changed_pixels = cv2.countNonZero(thresh)
+            percentage_completed = (changed_pixels / total_pixels) * 100
+
+            return render(request,'image_comparsion.html',{"percentage_completed": percentage_completed})
+
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    return render(request,'image_comparsion.html',{'form': form})
+def image_comparison_view(request):
+    return render(request, 'image_comparison.html')
+
+# def upload(request):
+#     return render(request, 'check_progress.html')
+# Load the model, label encoder, and GPT-2
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+# Update the file paths to the absolute path
+# model_path = 'C:\\Users\\Asus\\Downloads\\djangodemo\\djangodemo\\calc\\data\\resnet_model.pth'
+# label_encoder_path = 'C:\\Users\\Asus\\Downloads\\djangodemo\\djangodemo\\calc\\data\\label_encoder.pkl'
+model_path = os.path.join(settings.BASE_DIR, 'calc', 'data', 'resnet_model.pth')
+label_encoder_path = os.path.join(settings.BASE_DIR, 'calc', 'data', 'label_encoder.pkl')
+
+resnet_model = models.resnet18(pretrained=False)
+num_features = resnet_model.fc.in_features
+label_encoder = joblib.load(label_encoder_path)
+resnet_model.fc = torch.nn.Linear(num_features, len(label_encoder.classes_))
+resnet_model.load_state_dict(torch.load(model_path))
+resnet_model.to(device)
+resnet_model.eval()
+
+
+# Load GPT-2 model and tokenizer
+tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+gpt2_model = GPT2LMHeadModel.from_pretrained("gpt2")
+
+# Define the transformations for data
+transform = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+])
+
+def generate_text(prompt, num_sequences=1, max_length=100):
+    input_ids = tokenizer.encode(prompt, return_tensors="pt")
+
+    # Generate text
+    outputs = gpt2_model.generate(
+        input_ids, 
+        max_length=max_length, 
+        num_return_sequences=num_sequences, 
+        do_sample=True, 
+        top_p=0.95, 
+        top_k=50,
+        pad_token_id=tokenizer.eos_token_id
+    )
+    generated_texts = [tokenizer.decode(output, skip_special_tokens=True) for output in outputs]
+    return generated_texts
+
+def predict_stage(image):
+    image = transform(image).unsqueeze(0).to(device)
+    with torch.no_grad():
+        outputs = resnet_model(image)
+        predicted_probabilities = torch.softmax(outputs, dim=1).cpu().numpy().flatten()
+        predicted_label = label_encoder.inverse_transform([np.argmax(predicted_probabilities)])[0]
+
+    return predicted_label
+
+def check_progress(request):
+    if request.method == 'POST':
+        form = UploadImageForm(request.POST, request.FILES)
+        if form.is_valid():
+
+            image = form.cleaned_data['image']
+            # activity = form.cleaned_data['activity']
+
+            image = Image.open(image).convert('RGB')
+            predicted_stage = predict_stage(image)
+
+
+            image = form.cleaned_data['image'] 
+        #     Save the image using Django's file storage system
+            fs = FileSystemStorage()                            
+            filename = fs.save(image.name, image) 
+            image_url = fs.url(filename)  # Get the URL for the saved image
+
+            # Generate descriptive text based on the predicted label
+            prompts = {
+                'Foundation': "The foundation stage of construction involves laying the base of a building, including excavation and concrete pouring.",
+                'Super-structure': "The super-structure stage includes the construction of the main frame of the building, including walls, floors, and roof.",
+                'Interiors': "The interiors stage focuses on the internal finishing of the building, such as drywall, flooring, and fixtures."
+            }
+            prompt = prompts.get(predicted_stage, "The construction stage is not clearly defined.")
+            generated_text = generate_text(prompt, num_sequences=1)
+
+            return render(request, 'result.html', {'form': form,'image_url':image_url, 'predicted_stage': predicted_stage, 'generated_text': generated_text})
+    else:
+        form = UploadImageForm()
+
+    return render(request, 'check_progress.html', {'form': form}) 
+
+
+
+ <script>
+        document.getElementById('compareForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting normally
+
+            const formData = new FormData(this);
+
+            fetch('{% url "compare_images" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token if CSRF protection is enabled
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.getElementById('resultPercentage').textContent = data.percentage_completed + '%';
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>

@@ -1,0 +1,161 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Construction Progress</title>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom styles */
+        body {
+            background-color: #f3f4f6; /* Light gray background */
+        }
+        .result-container {
+            display: none; /* Initially hide result section */
+        }
+        .progress-bar {
+            height: 20px;
+            background-color: #ffd500; /* Yellow for the progress bar */
+            border-radius: 5px;
+        }
+        .progress-bg {
+            background-color: #e2e8f0; /* Light gray for the background */
+            border-radius: 5px;
+            overflow: hidden;
+            height: 20px;
+        }
+        .image-section {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .image-container {
+            width: 45%;
+            text-align: center;
+        }
+        img {
+            max-width: 100%; /* Responsive images */
+            border: 2px solid #00296b; /* Dark blue border */
+            border-radius: 5px;
+        }
+        .w{
+            width:200px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav p-4 z-10  bg-white shadow sticky top-0 z-10">
+        <div class="container mx-auto flex items-center justify-between">
+            <div class="flex items-center">
+                <img src="https://png.pngtree.com/png-vector/20221118/ourmid/pngtree-minimalistic-eye-vector-flatstyled-pictogram-for-vision-vector-light-illustration-vector-png-image_41032856.jpg" class="w-12 dark-blue grayscale-image">
+                <a href="/" class="dark-blue text-2xl font-bold">BuildEye</a>
+            </div>
+            <ul class="flex space-x-6">
+                <li><a href="/" class="text-grey-800 hover:text-yellow-500">Home</a></li>
+                <li><a href="/dashboard" class="text-grey-800 hover:text-yellow-500">Dashboard</a></li>
+                <li><a href="/upload" class="text-grey-800 hover:text-yellow-500">Upload Image</a></li>
+                <li><a href="/image-comparison" class="text-grey-800 hover:text-yellow-500">CheckProgress</a></li>
+                <li><a href="/requestDemo" class="text-grey-800 hover:text-yellow-500">RequestDemo</a></li>
+    
+            </ul>
+        </div>
+    </nav>
+    <div class="min-h-screen flex">
+        <div class="flex-1 bg-white p-6 shadow-md rounded-lg">
+            <section id="check-progress">
+                <h2 class="text-2xl font-extrabold mb-4 text-gray-800">
+                    Check the progress of construction <br>
+                    <span class="text-1xl  font-normal bg-red-300">
+                        Note:1.upload proper images<br>
+                             2.First upload previous image ,Then upload current image of construction.                      </span></h2>
+                <div class="bg-white p-6 rounded shadow-md">
+                    <form id="compare-form" class="p-4" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="w-full py-2 mt-10 px-4 bg-yellow-500 text-white font-semibold w rounded-lg hover:bg-yellow-600 transition  w-[200px]">Submit</button>
+                    </form>
+
+                    <div class="result-container" id="result">
+                        <h2 id="percentage-result" class="text-lg font-bold mt-4 text-gray-800"></h2>
+                        <div class="progress-bg mt-4">
+                            <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
+                        </div>
+                        <canvas id="progressChart" width="400" height="200" class="mt-4"></canvas>
+                    </div>
+
+                    <!-- Display uploaded images -->
+                    <div class="image-section" id="image-section">
+                        <div class="image-container">
+                            <h3 class="text-sm font-medium text-gray-600">Previous Image</h3>
+                            <img id="previous-image" src="" alt="Previous Image" />
+                        </div>
+                        <div class="image-container">
+                            <h3 class="text-sm font-medium text-gray-600">Current Image</h3>
+                            <img id="current-image" src="" alt="Current Image" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('compare-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            
+            fetch('/image-comparison/', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    const percentage = data.percentage_completed;
+                    document.getElementById('percentage-result').textContent = `Percentage of Changes: ${percentage.toFixed(2)}%`;
+                    document.getElementById('progress-bar').style.width = percentage + '%'; // Update progress bar
+                    document.querySelector('.result-container').style.display = 'block';
+
+                    // Displaying the metrics in a chart
+                    const ctx = document.getElementById('progressChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Percentage Completed'],
+                            datasets: [{
+                                label: 'Construction Progress',
+                                data: [percentage],
+                                backgroundColor: ['rgba(255, 215, 0, 0.6)'], // Yellow
+                                borderColor: ['rgba(255, 215, 0, 1)'], // Darker Yellow
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100
+                                }
+                            }
+                        }
+                    });
+
+                    // Display uploaded images
+                    document.getElementById('previous-image').src = URL.createObjectURL(formData.get('initial_image'));
+                    document.getElementById('current-image').src = URL.createObjectURL(formData.get('current_image'));
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+ {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construction Project Dashboard</title>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #f3f4f6;
+        }
+
+        /* Set a fixed height for the home section */
+        .home-section {
+            height: calc(100vh - 4rem); /* Adjust based on your header and footer if any */
+            overflow-y: auto; /* Enable vertical scrolling */
+        }
+
+        /* Hidden class for sections not displayed */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="nav p-4 z-10 bg-white shadow sticky top-0 z-10">
+    <div class="container mx-auto flex items-center justify-between">
+        <div class="flex items-center">
+            <img src="https://png.pngtree.com/png-vector/20221118/ourmid/pngtree-minimalistic-eye-vector-flatstyled-pictogram-for-vision-vector-light-illustration-vector-png-image_41032856.jpg" class="w-12 dark-blue grayscale-image">
+            <a href="#" class="dark-blue text-2xl font-bold">BuildEye</a>
+        </div>
+        <ul class="flex space-x-6">
+            <li><a href="/" class="text-grey-800 hover:text-yellow-500">Home</a></li>
+            <li><a href="{% url 'dashboard_' %}" class="text-grey-800 hover:text-yellow-500">Dashboard</a></li>
+            <li><a href="/upload" class="text-grey-800 hover:text-yellow-500">Upload Image</a></li>
+            <li><a href="/image-comparison" class="text-grey-800 hover:text-yellow-500">CheckProgress</a></li>
+            <li><a href="/requestDemo" class="text-grey-800 hover:text-yellow-500">RequestDemo</a></li>
+
+        </ul>
+    </div>
+</nav>
+    <div class="flex">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white p-6 shadow-md sticky top-0">
+            <h2 class="text-2xl font-semibold mb-4">Dashboard</h2>
+            <nav>
+                <ul>
+                    <li class="mb-4"><a href="#" class="nav-link text-gray-800 hover:text-yellow-500" data-target="home-section">🏠 Home</a></li>
+                    <li class="mb-4"><a href="#" class="nav-link text-gray-800 hover:text-yellow-500" data-target="projects-section">📁 My Projects</a></li>
+                    <li class="mb-4"><a href="#" class="nav-link text-gray-800 hover:text-yellow-500" data-target="add-project-section">➕ Add New Project</a></li>
+                    <li class="mb-4"><a href="#" class="nav-link text-gray-800 hover:text-yellow-500" data-target="tasks-section">📝 Tasks</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <!-- Home Section -->
+            <section id="home-section" class="section home-section h-screen mb-8">
+                <h2 class="text-xl font-semibold mb-4">Construction Managament Dashboard</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
+                    <!-- Progress Tracking -->
+                    <div class="bg-white p-4 rounded shadow-md flex flex-col justify-between">
+                        <h3 class="text-lg font-semibold mb-2">Progress Tracking</h3>
+                        <canvas id="progressChart" class="h-40"></canvas>
+                    </div>
+
+                    <!-- Employee Working Hours -->
+                    <div class="bg-white p-4 rounded shadow-md flex flex-col justify-between">
+                        <h3 class="text-lg font-semibold mb-2">Employee Working Hours</h3>
+                        <canvas id="workingHoursChart" class="h-40"></canvas>
+                        <div class="bg-white p-4 rounded shadow-md md:col-span-2 flex flex-col justify-between">
+                            <h3 class="text-lg font-semibold mb-2">Total Cost of Construction</h3>
+                            <canvas id="costChart" class="h-40"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Total Cost of Construction -->
+                </div>
+            </section>
+
+            <!-- My Projects Section -->
+            <section id="projects-section" class="section hidden h-screen mb-8">
+                <h2 class="text-xl font-semibold mb-4">My Constructions </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-[50rem]">
+                    <div class="bg-white p-4 rounded shadow-md">
+                        <h3 class="text-lg font-semibold">House Construction</h3>
+                        <p class="text-gray-600">40% Completed</p>
+                        <img src="https://images.pexels.com/photos/534228/pexels-photo-534228.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Project 1 Image" class="mt-2 rounded">
+                        <div class="flex justify-between mt-2">
+                            <button class="text-blue-500 hover:text-blue-700">Edit</button>
+                            <button class="text-red-500 hover:text-red-700">Delete</button>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow-md">
+                        <h3 class="text-lg font-semibold">Office construction</h3>
+                        <p class="text-gray-600">80% Completed</p>
+                        <img src="https://images.pexels.com/photos/176342/pexels-photo-176342.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Project 1 Image" class="mt-2 rounded">
+                        <div class="flex justify-between mt-2">
+                            <button class="text-blue-500 hover:text-blue-700">Edit</button>
+                            <button class="text-red-500 hover:text-red-700">Delete</button>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow-md">
+                        <h3 class="text-lg font-semibold">Residentional building</h3>
+                        <p class="text-gray-600">50% Completed</p>
+                        <img src="https://images.pexels.com/photos/11765530/pexels-photo-11765530.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Project 1 Image" class="mt-2 rounded h-[200px]">
+                        <div class="flex justify-between mt-2">
+                            <button class="text-blue-500 hover:text-blue-700">Edit</button>
+                            <button class="text-red-500 hover:text-red-700">Delete</button>
+                        </div>
+                    </div>
+                    <!-- Add more projects here -->
+                </div>
+            </section>
+
+            <!-- Add New Project Section -->
+            <section id="add-project-section" class="section hidden mb-8 h-screen">
+                <h2 class="text-xl font-semibold mb-4">Add New Project</h2>
+                <div class="bg-white p-6 rounded shadow-md">
+                    <form id="addProjectForm" method="post">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700">Project Title</label>
+                            <input type="text" name="title" class="mt-1 p-2 border border-gray-300 rounded w-full" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700">Description</label>
+                            <textarea name="description" class="mt-1 p-2 border border-gray-300 rounded w-full" required></textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700">Expected Completion Date</label>
+                            <input type="date" name="completion_date" class="mt-1 p-2 border border-gray-300 rounded w-full" required>
+                        </div>
+                        <button type="submit" class="w-full py-2 px-4 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition">Add Project</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Tasks Section -->
+            <section id="tasks-section" class="section hidden mb-8 h-screen">
+                <h2 class="text-xl font-semibold mb-4">Today's Tasks</h2>
+                <div class="bg-white p-6 rounded shadow-md">
+                    <ul class="list-disc pl-5">
+                        <li><input type="checkbox" class="mr-2">Site Inspection</li>
+                        <li><input type="checkbox" class="mr-2">Review Budget</li>
+                        <li><input type="checkbox" class="mr-2">Meet with Contractors</li>
+                        <li><input type="checkbox" class="mr-2">Check Material Deliveries</li>
+                    </ul>
+                </div>
+                <h2 class="text-xl font-semibold mb-4">Tomorrow's Tasks</h2>
+
+                <div class="bg-white p-6 rounded shadow-md">
+                    <ul class="list-disc pl-5">
+                        <li><input type="checkbox" class="mr-2">Site Inspection</li>
+                        <li><input type="checkbox" class="mr-2">Review Budget</li>
+                        <li><input type="checkbox" class="mr-2">Meet with Contractors</li>
+                        <li><input type="checkbox" class="mr-2">Check Material Deliveries</li>
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const links = document.querySelectorAll(".nav-link");
+            const sections = document.querySelectorAll(".section");
+
+            // Function to show the selected section and hide others
+            function showSection(target) {
+                sections.forEach(section => {
+                    if (section.id === target) {
+                        section.classList.remove("hidden");
+                    } else {
+                        section.classList.add("hidden");
+                    }
+                });
+            }
+
+            // Attach click event listeners to sidebar links
+            links.forEach(link => {
+                link.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    const targetSection = this.getAttribute("data-target");
+                    showSection(targetSection);
+                });
+            });
+
+            // Display the Home section by default on page load
+            showSection("home-section");
+        });
+         // Progress Tracking Chart
+         const ctxProgress = document.getElementById('progressChart').getContext('2d');
+         new Chart(ctxProgress, {
+             type: 'doughnut',
+             data: {
+                 labels: ['Completed', 'Pending'],
+                 datasets: [{
+                     label: 'Construction Progress',
+                     data: [8, 2], // Adjusted values for better representation
+                     backgroundColor: ['rgba(255, 215, 0, 0.6)', 'rgba(200, 200, 200, 0.6)'],
+                     borderColor: ['rgba(255, 215, 0, 1)', 'rgba(200, 200, 200, 1)'],
+                     borderWidth: 1
+                 }]
+             },
+             options: {
+                 responsive: true,
+                 maintainAspectRatio: true,
+             },
+             scales: {
+                 y: {
+                     beginAtZero: true
+                 }
+             },
+         });
+ 
+         // Employee Working Hours Chart
+         // Employee Working Hours Chart
+ const ctxHours = document.getElementById('workingHoursChart').getContext('2d');
+ new Chart(ctxHours, {
+     type: 'bar',
+     data: {
+         labels: ['Predicted Hours', 'Worked Hours', 'Allowed Hours'],
+         datasets: [{
+             label: 'Employee Working Hours',
+             data: [10, 6, 13], // Adjusted values
+             backgroundColor: ['rgba(0, 123, 255, 0.6)', 'rgba(0, 255, 0, 0.6)', 'rgba(255, 0, 0, 0.6)'],
+             borderColor: ['rgba(0, 123, 255, 1)', 'rgba(0, 255, 0, 1)', 'rgba(255, 0, 0, 1)'],
+             borderWidth: 1
+         }]
+     },
+     options: {
+         responsive: true,
+         maintainAspectRatio: true,  // Keep the aspect ratio
+         scales: {
+             y: {
+                 beginAtZero: true
+             }
+         }
+     }
+ });
+ 
+ 
+         // Total Cost Chart
+         const ctxCost = document.getElementById('costChart').getContext('2d');
+         new Chart(ctxCost, {
+             type: 'line',
+             data: {
+                 labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                 datasets: [{
+                     label: 'Total Cost of Construction',
+                     data: [10000, 20000, 15000, 30000], // Adjusted values
+                     fill: false,
+                     backgroundColor: 'rgba(255, 215, 0, 1)',
+                     borderColor: 'rgba(255, 215, 0, 1)',
+                     borderWidth: 2
+                 }]
+             },
+             options: {
+                 responsive: true,
+                 maintainAspectRatio: true,
+             },   scales: {
+                 y: {
+                     beginAtZero: true
+                 }
+             },
+         });
+    </script>
+</body>
+
+</html>

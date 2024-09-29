@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BuildEye</title>
+    <!-- Link to Tailwind CSS CDN -->
+
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <link rel='stylesheet' href="/style.css">
+</head>
+<style>
+    
+    /* Primary Colors */
+.dark-blue {
+    color: #2994FF; /* Dark blue for headers, nav bars */
+  }
+
+  .teal-green {
+    color: #10B981; /* Teal green for buttons, call-to-actions */
+  }
+  
+  .teal-green-bg {
+    background-color: #10B981; /* Teal green background */
+  }
+  
+  /* Secondary Colors */
+  .golden-yellow {
+    color: #FBBF24; /* Golden yellow for highlights */
+  }
+  
+  .light-gray-bg {
+    background-color: #F3F4F6; /* Light gray for backgrounds */
+  }
+  
+  /* Accent Colors */
+  .accent-red {
+    color: #E11D48; /* Red for error messages */
+  }
+  
+  .accent-red-bg {
+    background-color: #E11D48; /* Red background */
+  }
+  
+  .white-text {
+    color: #FFFFFF; /* White text on dark backgrounds */
+  }
+  
+  /* Example Button Styles */
+  .button {
+    background-color: #fff; /* Teal green button */
+    color: #000; /* White text */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width:250px;
+    height:50px;
+    align-items: center;
+    font-family: Montserrat sans-serif;
+    text-transform: uppercase;
+    font-stretch: 100%;
+  }
+  
+  .button:hover {
+    background-color:#F3F4F6; /* Dark blue on hover */
+  }
+  
+  /* Example Heading Style */
+  h1, h2, h3 {
+    color: #2994FF; /* Dark blue for headings */
+  }
+  
+  /* Error Alert Style */
+  .alert {
+    background-color: #E11D48; /* Red background for alerts */
+    color: #FFFFFF; /* White text */
+    padding: 15px;
+    border-radius: 5px;
+  }
+  .grayscale-image {
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+  }
+  
+  .grayscale-image:hover {
+    filter: grayscale(0%); /* Restores the original colors on hover */
+  }
+  video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the video covers the background */
+    z-index: -1; /* Ensures it stays behind the content */
+  }
+  .p{
+    padding-top:16rem;
+    padding-left:3rem;
+  }
+  .wi{
+    width:200px;
+  }
+  .container{
+
+  }
+  .container.sticky {
+    position: fixed;
+    background-color: rgba(255, 255, 255, 0.95);
+  }
+  .b{
+    border-radius:5px;
+  }
+  .c{
+ color:#152766;
+  }
+  .footer {
+    background-color: #75A300;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .footer-logo h1 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  .footer-links {
+    margin-bottom: 20px;
+  }
+  
+  .footer-links ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .footer-links ul li {
+    display: inline;
+    margin: 0 10px;
+  }
+  
+  .footer-links ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+  }
+  
+  .footer-links ul li a:hover {
+    text-decoration: underline;
+  }
+  
+  .footer-social a {
+    margin: 0 10px;
+  }
+  
+  .footer-social img {
+    width: 24px;
+    height: 24px;
+  }
+  
+</style>
+<body>
+    <!-- Navigation Bar -->
+   <nav class="nav p-4 z-10 bg-white shadow sticky top-0 z-10">
+    <div class="container mx-auto flex items-center justify-between">
+        <div class="flex items-center">
+            <img src="https://png.pngtree.com/png-vector/20221118/ourmid/pngtree-minimalistic-eye-vector-flatstyled-pictogram-for-vision-vector-light-illustration-vector-png-image_41032856.jpg" class="w-12 dark-blue grayscale-image">
+            <a href="#" class="dark-blue text-2xl font-bold">BuildEye</a>
+        </div>
+        <ul class="flex space-x-6">
+            <li><a href="/" class="text-grey-800 hover:text-yellow-500">Home</a></li>
+            <li><a href="{% url 'dashboard_' %}" class="text-grey-800 hover:text-yellow-500">Dashboard</a></li>
+            <li><a href="/upload" class="text-grey-800 hover:text-yellow-500">Upload Image</a></li>
+            <li><a href="/image-comparison" class="text-grey-800 hover:text-yellow-500">CheckProgress</a></li>
+            <li><a href="/requestDemo" class="text-grey-800 hover:text-yellow-500">RequestDemo</a></li>
+
+        </ul>
+    </div>
+</nav>
+
+
+    <!-- Background Image Container -->
+    <div class="relative h-screen bg-cover bg-center">
+        <!-- Background Overlay -->
+        <div class="absolute inset-0 bg-black opacity-50"></div>
+    
+        <!-- Video Background -->
+        <video autoplay loop muted class="absolute inset-0 w-full h-full object-cover">
+            <source src="../media/video1.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    
+        <!-- Overlay Content -->
+        <div class="relative p  z-10 flex flex-col justify-center items-center text-white">
+            <h3 class="text-4xl text-white flex font-bold mb-4 text-left mt-0 md-10">
+              Is it hard to explain your construction <br >
+              project progress?<br>
+              Let BuildEye show it for you
+            </h3>
+            <p class="pb-4">Use Construct AI to let your clients know exactly what is going on so you get paid faster!</p>
+            <div class="flex gap-10">
+
+            <a href="/upload" class="px-6 py-2 z-1 bg-yellow-500 text-white font-semibold hover:bg-yellow-600 transition button">
+                Explore Our Services
+            </a>
+            <a href="{% url 'image_comparison' %}" class="px-6 py-2 bg-yellow-800 text-white font-semibold  hover:bg-yellow-600 transition b">
+               Request Demo
+            </a>
+        </div>
+        </div>
+    </div>
+    
+    </div>
+
+    <!-- About Us Section -->
+    <section id="about" class="py-16 bg-gray-100">
+        <div class="container mx-auto pl-10 flex justify-center items-center">
+          <div>
+
+            <h2 class="text-4xl font-bold mb-6 c">What is our solution ???</h2>
+            <p class="text-2xl text-gray-700">Our idea is a Machine learning-based software that automates
+               the monitoring of construction activities by analyzing images using CNNs and Resnet-18 models and we have used object
+                detection models for enhanced text.
+            </p>
+          </div>
+            <img src="https://pro.construct.ai/projectOverview.png" class="mb-20" alt="overview">
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-16 bg-black	">
+        <div class="container mx-auto text-center h-[800px] mb-20">
+            <h2 class="text-3xl text-grey-200 font-bold mb-6 ">What distinguishes our solution  from other !!</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 bg-zinc-900">
+                <div class="p-6  shadow-lg rounded-lg bg-zinc-900">
+                    <h3 class="text-xl font-semibold mb-4 text-white">Drones:</h3>
+                    <p class="text-gray-300 ">Instead of manual upload we are using drones to capture n number of images from all directions and improve accuracy.
+                    </p>
+                </div>
+                <div class="p-6 bg-grey-950 shadow-lg rounded-lg text-white">
+                    <h3 class="text-xl font-semibold mb-4 text-white">Progress notifications.</h3>
+                    <p class="text-gray-300">It can send real time notifications to user regarding various aspects of construction progress and it will provide alerts like delay,completion…
+                        requirements.</p>
+                </div>
+                <div class="p-6 bg-zinc-900 shadow-lg rounded-lg text-white">
+                    <h3 class="text-xl font-semibold mb-4  text-white">Fully Functional Dashboard.</h3>
+                    <p class="text-gray-300">This dashboard will provide a comprehensive view of ongoing activities, making it easy for users to stay informed and take action.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-gray-100 h-[700px]">
+        <div class="container mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-6">RequestDemo</h2>
+            <p class="text-lg text-gray-700 mb-6">Get in touch with us to discuss your construction needs and request a
+                quote.</p>
+            <a href="/requestDemo"
+                class="px-6 py-2 bg-yellow-500 text-white font-semibold rounded-full hover:bg-yellow-600 transition">RequestDemo</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 p-4 text-center text-white">
+      <p>&copy; 2024 BuildEye. All rights reserved.</p>
+  </footer>
+</body>
+
+</html>

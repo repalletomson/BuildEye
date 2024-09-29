@@ -1,0 +1,65 @@
+/* Primary Colors */
+.dark-blue {
+    color: #1E3A8A; /* Dark blue for headers, nav bars */
+  }
+  
+  .teal-green {
+    color: #10B981; /* Teal green for buttons, call-to-actions */
+  }
+  
+  .teal-green-bg {
+    background-color: #10B981; /* Teal green background */
+  }
+  
+  /* Secondary Colors */
+  .golden-yellow {
+    color: #FBBF24; /* Golden yellow for highlights */
+  }
+  
+  .light-gray-bg {
+    background-color: #F3F4F6; /* Light gray for backgrounds */
+  }
+  
+  /* Accent Colors */
+  .accent-red {
+    color: #E11D48; /* Red for error messages */
+  }
+  
+  .accent-red-bg {
+    background-color: #E11D48; /* Red background */
+  }
+  
+  .white-text {
+    color: #FFFFFF; /* White text on dark backgrounds */
+  }
+  
+  /* Example Button Styles */
+  .button {
+    background-color: #10B981; /* Teal green button */
+    color: #FFFFFF; /* White text */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .button:hover {
+    background-color: #1E3A8A; /* Dark blue on hover */
+  }
+  
+  /* Example Heading Style */
+  h1, h2, h3 {
+    color: #1E3A8A; /* Dark blue for headings */
+  }
+  
+  /* Error Alert Style */
+  .alert {
+    background-color: #E11D48; /* Red background for alerts */
+    color: #FFFFFF; /* White text */
+    padding: 15px;
+    border-radius: 5px;
+  }
+  a{
+    color:white;
+  }
+  

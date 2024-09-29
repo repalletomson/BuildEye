@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Construction Progress</title>
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Your custom styles can go here */
+    </style>
+</head>
+<body>
+    <div class="min-h-screen flex">
+        <!-- <aside class="w-64 bg-gray-800 text-white p-6">
+            <h1 class="text-2xl font-bold">Dashboard</h1>
+            <nav>
+                <ul>
+                    <li><a href="#home" class="block p-2 hover:bg-gray-700 rounded">Home</a></li>
+                    <li><a href="#add-new-project" class="block p-2 hover:bg-gray-700 rounded">Add New Project</a></li>
+                    <li><a href="#check-progress" class="block p-2 hover:bg-gray-700 rounded">Check Progress</a></li>
+                    <li><a href="#my-projects" class="block p-2 hover:bg-gray-700 rounded">My Projects</a></li>
+                </ul>
+            </nav>
+        </aside> -->
+
+        <div class="flex-1 bg-gray-100 p-6">
+            <section id="check-progress">
+                <h2 class="text-xl font-semibold mb-4">Check Progress</h2>
+                <div class="bg-white p-6 rounded shadow-md">
+                    
+                    <div class="result" id="result">
+                        <h2 id="resultPercentage" class="text-lg font-bold mt-4">{{percentage_completed}}</h2>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+  
+</body>
+</html>
